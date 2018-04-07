@@ -8,24 +8,6 @@ require_once("data/db_info.php");
 $s = mysqli_connect($SERV,$USER,$PASS) or die("失敗しました");
 mysqli_select_db($s, $DBMM);
 
-//タイトル、画像などの表示
-// print <<<eot
-//     <!DOCTYPE html>
-//     <html lang="ja">
-//     <head>
-//         <meta charset="utf-8">
-//         <title>SQLカフェのページ</title>
-//     </head>
-//     <body bgcolor="lightsteelblue">
-//         <img src="pic/oya.gif">
-//         <font size="7" color="indigo">SQLカフェの掲示板だよ～</font><br><br>
-//         みたいスレッドの番号をクリックしてください
-//         <hr>
-//         <font size="5">(スレッド一覧)</font>
-//         <br>
-//     <body>
-//     <html>
-// eot;
 
 // クライアントのIPアドレス取得
 $ip = getenv("REMOTE_ADDR");
@@ -43,48 +25,7 @@ if($su_d != "") {
 
 //tbj0の全データ抽出
 $re = mysqli_query($s, "SELECT * FROM tbj0");
-$kekka = mysqli_fetch_array($re);
-
-$guru = $kekka['guru'];
-$sure = $kekka['sure'];
-$niti = $kekka['niti'];
-
-//     print <<<eot2
-//         <a href="keizi.php?gu=$kekka[0]">$kekka[0] $kekka[1]</a>
-//         <br>
-//         $kekka[2]作成<br><br>
-// eot2;
-// }
-
-//データベース切断
-mysqli_close($s);
-
-//スレッド名入力用表示、トップ等へのリンク
-// print <<<eot3
-//     <hr>
-//     <font size="5">
-//         (スレッド作成)
-//     </font>
-//     <br>
-//         新しくスレッドをつくるときは、ここでどうぞ！
-//     <br>
-//     <form method="get" action="keizi_top.php">
-//         新しく作るスレッドのタイトル
-//         <input type="text" name="su" size="50">
-//         <br>
-//         <input type="submit" value="作成">
-//     </form>
-//     <hr>
-//     <font size="5">
-//         (メッセージ検索)
-//     </font>
-//     <a href="keizi_search.php">検索するときはここをクリック</a>
-//     <hr>
-//     <a href="keizi_syokika.php">掲示板のスレッドを削除する</a>
-//     <hr>
-//     </body>
-//     </html>
-// eot3;
+$list = mysqli_fetch_all($re);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -100,12 +41,12 @@ mysqli_close($s);
     <hr>
     <font size="5">(スレッド一覧)</font>
     <br>
-<?php if($kekka) : ?>
-    <a href="keizi.php?gu=<?php echo $guru ?>"><?php echo $guru.' '.$sure; ?></a>
+<?php foreach($list as $item) : ?>
+    <a href="keizi.php?id=<?php echo $item[0]; ?>"><?php echo $item[0]." ".$item[1] ?></a>
     <br>
-    <?php $niti ?>作成<br><br>
-    <hr>
-<?php endif; ?>
+    <?php $item[2] ?>作成<br><br>
+<?php endforeach; ?>
+<hr>
     <font size="5">
         (スレッド作成)
     </font>
